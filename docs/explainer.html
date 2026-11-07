@@ -1,0 +1,1139 @@
+<title>Multi-Point VLC Testbed</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+
+<style>
+:root{
+  --bg:#EEF0F4;
+  --surface:#F9FAFC;
+  --surface-2:#E6E9EF;
+  --ink:#131822;
+  --ink-2:#4B5566;
+  --ink-3:#606978;
+  --line:#D3D8E2;
+  --line-soft:#E2E6ED;
+  --cellA:#C8761A;
+  --accent-text:#995A14;
+  --cellB:#1E7F94;
+  --zf:#6A4FB8;
+  --jt:#995A14;
+  --siso:#1B7285;
+  --np:#5F6A7B;
+  --glow:rgba(200,118,26,.16);
+  --shadow:0 1px 2px rgba(19,24,34,.06),0 8px 24px -12px rgba(19,24,34,.18);
+  --maxw:69ch;
+  --wide:1120px;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0D1017;
+    --surface:#141924;
+    --surface-2:#1C2231;
+    --ink:#E7EBF2;
+    --ink-2:#9BA6B8;
+    --ink-3:#7F8A9A;
+    --line:#262D3C;
+    --line-soft:#1E2433;
+    --cellA:#F0A24B;
+    --accent-text:#F0A24B;
+    --cellB:#4FBFD6;
+    --zf:#A58BF0;
+    --jt:#F0A24B;
+    --siso:#4FBFD6;
+    --np:#808A9F;
+    --glow:rgba(240,162,75,.14);
+    --shadow:0 1px 2px rgba(0,0,0,.5),0 12px 32px -16px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0D1017;
+  --surface:#141924;
+  --surface-2:#1C2231;
+  --ink:#E7EBF2;
+  --ink-2:#9BA6B8;
+  --ink-3:#7F8A9A;
+  --line:#262D3C;
+  --line-soft:#1E2433;
+  --cellA:#F0A24B;
+  --accent-text:#F0A24B;
+  --cellB:#4FBFD6;
+  --zf:#A58BF0;
+  --jt:#F0A24B;
+  --siso:#4FBFD6;
+  --np:#808A9F;
+  --glow:rgba(240,162,75,.14);
+  --shadow:0 1px 2px rgba(0,0,0,.5),0 12px 32px -16px rgba(0,0,0,.8);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:"Newsreader",Georgia,"Times New Roman",serif;
+  font-size:17.5px;
+  line-height:1.62;
+  font-weight:400;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4,.ui{font-family:"Archivo","Helvetica Neue",Arial,sans-serif;text-wrap:balance}
+code,.mono,.num{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-variant-numeric:tabular-nums}
+
+.wrap{max-width:var(--wide);margin:0 auto;padding:0 22px}
+.col{max-width:var(--maxw);margin-left:auto;margin-right:auto}
+section{padding:0 0 12px}
+p{margin:0 0 1.05em}
+a{color:var(--ink);text-decoration-color:var(--cellA);text-underline-offset:3px}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--cellA);outline-offset:2px;border-radius:3px}
+
+/* ---------- hero ---------- */
+.hero{position:relative;border-bottom:1px solid var(--line);margin-bottom:46px;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;background:radial-gradient(70% 90% at 28% 0%,var(--glow),transparent 62%),radial-gradient(70% 90% at 72% 0%,var(--glow),transparent 62%);pointer-events:none}
+.hero-inner{position:relative;padding:54px 0 34px;display:grid;gap:30px;grid-template-columns:1fr}
+@media(min-width:900px){.hero-inner{grid-template-columns:1.05fr .95fr;align-items:center;padding:70px 0 44px}}
+.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin:0 0 18px}
+h1{font-size:clamp(34px,5.6vw,56px);line-height:1.02;letter-spacing:-.025em;font-weight:700;margin:0 0 18px}
+h1 em{font-style:normal;color:var(--cellA)}
+.standfirst{font-size:19.5px;line-height:1.55;color:var(--ink-2);margin:0 0 24px;max-width:46ch}
+.byline{font-size:14.5px;line-height:1.55;color:var(--ink-2);border-top:1px solid var(--line);padding-top:16px;margin:0}
+.byline strong{font-weight:500;color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
+.chip{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.05em;padding:4px 9px;border:1px solid var(--line);border-radius:999px;color:var(--ink-2);background:var(--surface)}
+.heroCanvasWrap{border:1px solid var(--line);border-radius:4px;background:var(--surface);box-shadow:var(--shadow);overflow:hidden}
+.heroCanvasWrap canvas{display:block;width:100%;height:330px}
+
+/* ---------- typography blocks ---------- */
+.stage{display:flex;align-items:baseline;gap:14px;margin:58px 0 10px}
+.stage-num{font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:600;letter-spacing:.1em;color:var(--accent-text);padding-top:4px}
+h2{font-size:clamp(25px,3.4vw,33px);letter-spacing:-.02em;font-weight:600;margin:0;line-height:1.14}
+.kicker{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin:0 0 7px}
+h3{font-size:19px;font-weight:600;letter-spacing:-.01em;margin:34px 0 8px}
+.lede{font-size:19px;color:var(--ink-2);margin-bottom:1.3em}
+.note{font-size:15px;color:var(--ink-2);border-left:2px solid var(--line);padding-left:16px;margin:26px 0}
+
+/* ---------- equations ---------- */
+.eq{background:var(--surface);border:1px solid var(--line-soft);border-radius:4px;padding:16px 18px;margin:22px 0;overflow-x:auto;font-family:"IBM Plex Mono",monospace;font-size:14px;line-height:1.95;color:var(--ink)}
+.eq .tag{float:right;color:var(--ink-3);font-size:12px}
+.eq .where{display:block;font-family:"Newsreader",serif;font-size:15px;color:var(--ink-2);margin-top:10px;line-height:1.5}
+var{font-style:italic;font-family:"Newsreader",serif;font-size:1.06em}
+
+/* ---------- instrument panels ---------- */
+.panel{margin:38px auto;background:var(--surface);border:1px solid var(--line);border-radius:5px;box-shadow:var(--shadow);overflow:hidden;max-width:var(--wide)}
+.panel-head{display:flex;flex-wrap:wrap;align-items:center;gap:12px;justify-content:space-between;padding:12px 18px;border-bottom:1px solid var(--line);background:var(--surface-2)}
+.panel-title{font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-2);font-weight:600}
+.panel-body{padding:18px}
+.panel canvas{display:block;width:100%;border-radius:3px}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--ink-2);align-items:center}
+.sw{display:inline-block;width:18px;height:3px;border-radius:2px;margin-right:6px;vertical-align:middle;flex:none}
+.legend span{display:inline-flex;align-items:center}
+
+.ctrls{display:grid;gap:14px 20px;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));margin-top:18px;padding-top:16px;border-top:1px solid var(--line-soft)}
+.ctrl{display:flex;flex-direction:column;gap:5px}
+.ctrl label{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.ctrl label b{font-weight:600;color:var(--ink);font-size:12.5px;letter-spacing:0;text-transform:none}
+input[type=range]{width:100%;accent-color:var(--cellA);background:transparent;height:30px;cursor:pointer}
+@media (pointer:coarse){
+  input[type=range]{height:44px}
+  .seg button,select,button.btn{min-height:44px}
+}
+select,button.btn{font-family:"IBM Plex Mono",monospace;font-size:12.5px;min-height:40px;padding:8px 14px;border:1px solid var(--line);border-radius:3px;background:var(--surface);color:var(--ink);cursor:pointer}
+button.btn:hover{border-color:var(--cellA)}
+.seg{display:flex;border:1px solid var(--line);border-radius:3px;overflow:hidden;width:fit-content}
+.seg button{font-family:"IBM Plex Mono",monospace;font-size:12px;min-height:40px;padding:8px 14px;border:0;background:var(--surface);color:var(--ink-2);cursor:pointer;border-right:1px solid var(--line)}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed="true"]{background:var(--cellA);color:#fff}
+
+.readouts{display:grid;gap:1px;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));background:var(--line-soft);border:1px solid var(--line-soft);border-radius:4px;margin-top:16px;overflow:hidden}
+.ro{background:var(--surface);padding:10px 12px}
+.ro span{display:block;font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin-bottom:3px}
+.ro b{font-family:"IBM Plex Mono",monospace;font-size:17px;font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+
+/* ---------- tables ---------- */
+.tablewrap{overflow-x:auto;margin:26px 0}
+table{border-collapse:collapse;width:100%;font-family:"IBM Plex Mono",monospace;font-size:13px;min-width:460px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line-soft)}
+th{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);font-weight:600;border-bottom:1px solid var(--line)}
+td.n{text-align:right;font-variant-numeric:tabular-nums}
+tbody tr:hover{background:var(--surface-2)}
+caption{caption-side:bottom;text-align:left;font-family:"Newsreader",serif;font-size:14px;color:var(--ink-2);padding-top:10px}
+
+/* ---------- misc ---------- */
+.matrix{display:inline-grid;grid-template-columns:repeat(2,1fr);gap:4px 14px;font-family:"IBM Plex Mono",monospace;font-size:13px;padding:8px 14px;border-left:2px solid var(--ink-3);border-right:2px solid var(--ink-3);border-radius:2px;font-variant-numeric:tabular-nums}
+.matrows{display:flex;flex-wrap:wrap;gap:26px;align-items:center;margin-top:16px}
+.matlab{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-3);display:block;margin-bottom:5px;letter-spacing:.06em}
+.bandkey{display:flex;flex-wrap:wrap;gap:16px;margin-top:12px;font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--ink-2)}
+.bandkey i{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:6px;vertical-align:-1px;font-style:normal}
+ul.tight{margin:0 0 1.1em;padding-left:1.15em}
+ul.tight li{margin-bottom:.42em}
+.footer{border-top:1px solid var(--line);margin-top:64px;padding:30px 0 56px;font-size:14.5px;color:var(--ink-2)}
+.footer .col{max-width:var(--maxw)}
+.cite{background:var(--surface);border:1px solid var(--line-soft);border-radius:4px;padding:14px 16px;font-family:"IBM Plex Mono",monospace;font-size:12.5px;line-height:1.65;overflow-x:auto;white-space:pre;color:var(--ink-2)}
+.copyright{font-size:12.5px;color:var(--ink-3);line-height:1.55;margin-top:20px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<div class="hero">
+  <div class="wrap hero-inner">
+    <div>
+      <p class="eyebrow">CSNDSP 2026 &middot; Aalto University</p>
+      <h1>Two lamps, one floor, <em>three ways to share it</em></h1>
+      <p class="standfirst">A software-defined visible-light testbed, and what happens to a user who walks from directly under one LED to the dead zone between two.</p>
+      <p class="byline"><strong>Ramya Mummadi</strong>, Xinyu Zhang, Alexis A. Dowhuszko, Konstantinos G. Rallis, Risto Wichman, Jyri Hämäläinen<br>
+      15th Int. Symposium on Communication Systems, Networks and Digital Signal Processing &middot; <a href="https://doi.org/10.1109/CSNDSP68462.2026.11654482">DOI 10.1109/CSNDSP68462.2026.11654482</a></p>
+      <div class="chips">
+        <span class="chip">GNU Radio + USRP-N210</span>
+        <span class="chip">OFDM / IM-DD</span>
+        <span class="chip">ZF precoding</span>
+        <span class="chip">Joint transmission</span>
+      </div>
+    </div>
+    <div class="heroCanvasWrap"><canvas role="img" id="heroC" aria-label="Animated cross-section of two ceiling LEDs illuminating a floor, with the resulting signal-to-interference curve below"></canvas></div>
+  </div>
+</div>
+
+<div class="wrap">
+<div class="col">
+
+<p class="lede">Indoor lighting is already a dense, overlapping grid of emitters. If you modulate those LEDs fast enough to carry data, you inherit that grid as your cell plan — and you inherit its worst property: every luminaire spills into its neighbour's cell. This paper builds the link on real hardware and measures what that spill costs, then fixes it two different ways.</p>
+
+<p>The headline result is a map rather than a number. In a two-cell setup with the LEDs 170&nbsp;cm apart, no single transmission scheme wins everywhere. Plain reuse is best for about 22% of the floor, zero-forcing precoding for 46%, and joint transmission for the remaining 32%. The page below walks the signal chain that produces that split, with each stage runnable.</p>
+
+<div class="note"><strong>About the simulations.</strong> Every panel on this page is a physical model built from the equations in the paper, calibrated to the measured geometry (1.6&nbsp;m mounting height, 1.7&nbsp;m LED separation). They are there to show the mechanism and let you push it. The measured results are reported separately, as measurements, in the tables.</div>
+
+<div class="stage"><span class="stage-num">01</span><h2>The channel is a cosine lobe</h2></div>
+
+<p>A phosphor-converted white LED radiates as a Lambertian emitter: brightness falls off as a power of the cosine of the angle off boresight. Put a photodetector on the floor and the channel gain between them is pure geometry.</p>
+
+<div class="eq"><span class="tag">(2)</span>H = (m+1)·A / (2π·d²) · cos<sup>m</sup>(φ) · T<sub>s</sub>(ψ) · g(ψ) · cos(ψ),&nbsp;&nbsp; 0 ≤ ψ ≤ Ψ<sub>c</sub>
+<span class="where">with Lambertian order <var>m</var> = −ln2 / ln(cos Φ<sub>½</sub>). Here <var>A</var> is the detector's active area, <var>d</var> the LED-to-PD distance, <var>φ</var> the irradiance angle, <var>ψ</var> the incidence angle, <var>T<sub>s</sub></var> the optical filter gain and <var>g</var> the concentrator gain. Outside the field of view Ψ<sub>c</sub>, the gain is zero — a hard edge, not a roll-off.</span></div>
+
+<p>Two things in that expression do the damage. The <code>1/d²</code> term is ordinary free-space spreading. The <code>cos<sup>m</sup>(φ)</code> term is sharper: with the detector flat on the floor and the LED pointing straight down, both angles collapse to the same one, and the gain goes as <code>h<sup>m+1</sup> / d<sup>m+3</sup></code>. A narrow-beam LED (large <var>m</var>) therefore builds a tight, bright cell with a steep skirt — good for isolation, bad for coverage.</p>
+
+<p>The paper validates this against measurement in both planes. Vertically, the Lambertian model tracks the measured gain closely across the whole range. Horizontally, it tracks to about 70&nbsp;cm from the LED, then the measurement starts to run above the model — wall reflections and ambient light contribute power that a pure line-of-sight model does not predict.</p>
+
+</div>
+
+<div class="panel">
+  <div class="panel-head">
+    <span class="panel-title">01 · Lambertian channel explorer</span>
+    <div class="legend"><span><i class="sw" aria-hidden="true" style="background:var(--cellA)"></i>channel gain H(x)</span><span><i class="sw" aria-hidden="true" style="background:var(--ink-3)"></i>field-of-view cutoff</span></div>
+  </div>
+  <div class="panel-body">
+    <canvas role="img" id="lamC" height="300" aria-label="Cross-section of one LED over a floor showing its radiation lobe, and a plot of channel gain against horizontal position"></canvas>
+    <div class="readouts">
+      <div class="ro"><span>Lambertian order m</span><b id="ro_m">—</b></div>
+      <div class="ro"><span>Distance d</span><b id="ro_d">—</b></div>
+      <div class="ro"><span>Incidence ψ</span><b id="ro_psi">—</b></div>
+      <div class="ro"><span>Gain H</span><b id="ro_H">—</b></div>
+      <div class="ro"><span>Loss vs boresight</span><b id="ro_rel">—</b></div>
+    </div>
+    <div class="ctrls">
+      <div class="ctrl"><label>Mount height <b id="v_h">1.60 m</b></label><input type="range" id="s_h" min="0.8" max="3.0" step="0.05" value="1.6"></div>
+      <div class="ctrl"><label>Half-intensity angle Φ½ <b id="v_phi">17°</b></label><input type="range" id="s_phi" min="10" max="70" step="1" value="17"></div>
+      <div class="ctrl"><label>Field of view Ψc <b id="v_fov">60°</b></label><input type="range" id="s_fov" min="20" max="85" step="1" value="60"></div>
+      <div class="ctrl"><label>Detector area A <b id="v_area">1.0 cm²</b></label><input type="range" id="s_area" min="0.1" max="4" step="0.1" value="1"></div>
+      <div class="ctrl"><label>User position x <b id="v_x">0.60 m</b></label><input type="range" id="s_x" min="-2.5" max="2.5" step="0.01" value="0.6"></div>
+    </div>
+  </div>
+</div>
+
+<div class="col">
+<p>Push Φ<sub>½</sub> down and watch the lobe narrow: peak gain climbs, but the usable radius collapses. Push the field of view down and the curve acquires vertical walls — past Ψ<sub>c</sub> the detector simply stops seeing the lamp. That cliff is why VLC cell planning is a lighting problem as much as a radio one.</p>
+
+<div class="stage"><span class="stage-num">02</span><h2>Getting bits onto light</h2></div>
+
+<p>The modulation is intensity modulation with direct detection: the LED's brightness carries the waveform, and the photodetector responds to received optical power. There is no phase to recover and no negative light. The received signal is</p>
+
+<div class="eq"><span class="tag">(1)</span>r(t) = R · h · x(t) + n(t)
+<span class="where">where <var>R</var> is the detector responsivity, <var>h</var> the channel gain from (2), and <var>n(t)</var> the combined shot and thermal noise of the photodetector.</span></div>
+
+<p>OFDM is attractive here for the usual reason — it turns a frequency-selective channel into a stack of flat subcarriers — but it generates a complex, bipolar signal, and light cannot be negative. Optical OFDM normally solves this with Hermitian symmetry, spending half the spectrum to force a real-valued output. This testbed takes the other route: a passband scheme, upconverting the complex baseband onto an intermediate frequency so the time-domain waveform comes out real without the symmetry constraint. A DC bias then lifts the whole thing above zero so it can drive the LED.</p>
+
+<p>That bias is the central tension of the design. Too little and the waveform's negative excursions clip at zero. Too much and the LED leaves its linear region at the top, and you are burning optical power on a constant term that carries no information. OFDM's high peak-to-average power ratio makes the window tight.</p>
+</div>
+
+<div class="panel">
+  <div class="panel-head">
+    <span class="panel-title">02 · OFDM waveform and IM/DD drive</span>
+    <div class="legend"><span><i class="sw" aria-hidden="true" style="background:var(--cellA)"></i>drive waveform</span><span><i class="sw" aria-hidden="true" style="background:var(--np)"></i>DC bias / limits</span><span><i class="sw" aria-hidden="true" style="background:var(--cellB)"></i>received constellation</span></div>
+  </div>
+  <div class="panel-body">
+    <canvas role="img" id="ofdmC" height="320" aria-label="Time-domain OFDM drive waveform with DC bias and clipping limits, alongside the received QAM constellation"></canvas>
+    <div class="readouts">
+      <div class="ro"><span>PAPR</span><b id="ro_papr">—</b></div>
+      <div class="ro"><span>Samples clipped</span><b id="ro_clip">—</b></div>
+      <div class="ro"><span>EVM</span><b id="ro_evm">—</b></div>
+      <div class="ro"><span>Bits / symbol</span><b id="ro_bps">—</b></div>
+      <div class="ro"><span>Symbol errors</span><b id="ro_ser">—</b></div>
+    </div>
+    <div class="ctrls">
+      <div class="ctrl"><label>Modulation</label>
+        <div class="seg" id="seg_mod"><button data-m="4" aria-pressed="true">QPSK</button><button data-m="16" aria-pressed="false">16-QAM</button></div>
+      </div>
+      <div class="ctrl"><label>Subcarriers <b id="v_nsc">64</b></label><input type="range" id="s_nsc" min="16" max="128" step="16" value="64"></div>
+      <div class="ctrl"><label>Drive amplitude <b id="v_amp">0.55</b></label><input type="range" id="s_amp" min="0.1" max="1.4" step="0.02" value="0.55"></div>
+      <div class="ctrl"><label>DC bias <b id="v_bias">0.50</b></label><input type="range" id="s_bias" min="0.1" max="0.9" step="0.01" value="0.5"></div>
+      <div class="ctrl"><label>Receive SNR <b id="v_snr">22 dB</b></label><input type="range" id="s_snr" min="2" max="40" step="0.5" value="22"></div>
+      <div class="ctrl"><label>&nbsp;</label><button class="btn" id="b_reroll">New symbol block</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="col">
+<p>Set 16-QAM and drop the SNR below about 16&nbsp;dB: the constellation clouds merge and the error count runs away. That sensitivity is exactly why the measured 16-QAM coverage radius in the paper is so much tighter than QPSK's. Separately, raise the drive amplitude past the bias headroom and the clipping counter rises — clipping noise lands back in-band and the constellation smears even with the noise slider at its cleanest.</p>
+
+<div class="stage"><span class="stage-num">03</span><h2>What one cell can actually deliver</h2></div>
+
+<p>With a single LED and a single detector, the link SNR follows straight from the channel gain:</p>
+
+<div class="eq"><span class="tag">(3)</span>SNR<sub>SISO</sub> = (G · R · P<sub>tx</sub> · h)² / σ<sub>n</sub>²
+<span class="where">with <var>G</var> the transimpedance amplifier gain, <var>P<sub>tx</sub></var> the transmitted optical power, and <var>σ<sub>n</sub>²</var> the total noise variance at the detector.</span></div>
+
+<p>From there the bit error rate is textbook AWGN, which is the point: it gives a theoretical curve to measure against.</p>
+
+<div class="eq"><span class="tag">(4)</span>BER<sub>QPSK</sub> = ½ · erfc( √(E<sub>b</sub>/N₀) )
+<br><span class="tag">(5)</span>BER<sub>M-QAM</sub> ≈ 3/(2(M−1)) · erfc( √( 3/(M−1) · E<sub>b</sub>/N₀ ) )</div>
+
+<p>Measured against those curves, QPSK tracks theory across most of the cell and falls below 10⁻⁶ close in. 16-QAM holds only inside about 90&nbsp;cm; beyond that its BER climbs to the order of 10⁻¹ — unusable. The binding constraint is not the optics but the phosphor: the yellow phosphor that converts blue LED emission to white has a slow response, which caps the electrical modulation bandwidth and sets the single-cell coverage radius at 150–160&nbsp;cm.</p>
+</div>
+
+<div class="panel">
+  <div class="panel-head">
+    <span class="panel-title">03 · BER against E<sub>b</sub>/N₀</span>
+    <div class="legend"><span><i class="sw" aria-hidden="true" style="background:var(--cellB)"></i>QPSK (solid)</span><span><i class="sw" aria-hidden="true" style="background:repeating-linear-gradient(90deg,var(--cellA) 0 9px,transparent 9px 13px)"></i>16-QAM (long dash)</span></div>
+  </div>
+  <div class="panel-body">
+    <canvas role="img" id="berC" height="290" aria-label="Log-scale plot of bit error rate against Eb/N0 for QPSK and 16-QAM"></canvas>
+    <div class="readouts">
+      <div class="ro"><span>Eb/N0</span><b id="ro_ebn0">—</b></div>
+      <div class="ro"><span>BER · QPSK</span><b id="ro_bq">—</b></div>
+      <div class="ro"><span>BER · 16-QAM</span><b id="ro_b16">—</b></div>
+      <div class="ro"><span>Gap</span><b id="ro_gap">—</b></div>
+    </div>
+    <div class="ctrls">
+      <div class="ctrl"><label>Operating E<sub>b</sub>/N₀ <b id="v_ebn0">10 dB</b></label><input type="range" id="s_ebn0" min="0" max="22" step="0.25" value="10"></div>
+      <div class="ctrl"><label>Target BER <b id="v_tgt">1e-3</b></label><input type="range" id="s_tgt" min="2" max="7" step="1" value="3"></div>
+    </div>
+  </div>
+</div>
+
+<div class="col">
+<div class="stage"><span class="stage-num">04</span><h2>Add a second lamp, lose the cell edge</h2></div>
+
+<p>Now mount a second identical LED 170&nbsp;cm away and let it serve its own user on the same resources. Frequency reuse doubles the aggregate rate, and for a user sitting under either lamp it costs almost nothing. For a user in the overlap it is close to fatal: both signals arrive at comparable strength, so the second one is not a weak nuisance but a co-equal competitor.</p>
+
+<div class="eq"><span class="tag">(9)</span>SINR<sub>no-ZF</sub> = (G·R·P<sub>tx,1</sub>·H<sub>1,1</sub>)² / [ (G·R·P<sub>tx,2</sub>·H<sub>2,1</sub>)² + σ<sub>n</sub>² ]</div>
+
+<p>Both fixes keep the receiver dumb — all the intelligence sits at the transmitter, which matters because a VLC receiver is a cheap photodiode and you do not want successive interference cancellation running on it.</p>
+
+<h3>Zero-forcing: cancel the interference</h3>
+
+<p>With channel state information at the transmitter, precode the two streams so that what lands at each detector is only its own data. The precoder is the Moore-Penrose pseudo-inverse of the channel matrix:</p>
+
+<div class="eq"><span class="tag">(8)</span>W<sub>ZF</sub> = H<sup>T</sup>(H·H<sup>T</sup>)<sup>−1</sup>&nbsp;&nbsp;&nbsp;⟹&nbsp;&nbsp;&nbsp;H<sub>eff</sub> = H·W = I₂</div>
+
+<p>Columns are then normalised so each LED stays inside its permitted intensity range — this is a lighting fixture, and it has a brightness it is supposed to maintain. Zero-forcing has a well-known cost: when the two channel rows become similar, the inverse blows up, the precoder amplifies, and after normalisation the useful signal shrinks. That is noise enhancement, and in this geometry it is worst precisely at the midpoint where the two gains are equal.</p>
+
+<h3>Joint transmission: use the interference</h3>
+
+<p>The alternative inverts the premise. Instead of separating the users, send the <em>same</em> stream from both LEDs and let the optical powers add constructively at the detector:</p>
+
+<div class="eq"><span class="tag">(11)</span>SNR<sub>JT</sub> = (G·R·P<sub>tx,1</sub>·H<sub>1,1</sub> + G·R·P<sub>tx,2</sub>·H<sub>2,1</sub>)² / σ<sub>n</sub>²</div>
+
+<p>At the midpoint, where each lamp alone is at its weakest, two equal contributions add to roughly four times the power. The interference becomes signal. The price is that joint transmission is single-user — both lamps are busy serving one person, so the others have to be scheduled orthogonally in time.</p>
+</div>
+
+<div class="panel">
+  <div class="panel-head">
+    <span class="panel-title">04 · Two-cell scheme comparison</span>
+    <div class="legend">
+      <span><i class="sw" aria-hidden="true" style="background:repeating-linear-gradient(90deg,var(--siso) 0 5px,transparent 5px 9px)"></i>SISO single-cell (dashed)</span>
+      <span><i class="sw" aria-hidden="true" style="background:repeating-linear-gradient(90deg,var(--np) 0 2px,transparent 2px 5px)"></i>Reuse, no precoding (dotted)</span>
+      <span><i class="sw" aria-hidden="true" style="background:var(--zf)"></i>Zero-forcing (solid)</span>
+      <span><i class="sw" aria-hidden="true" style="background:repeating-linear-gradient(90deg,var(--jt) 0 9px,transparent 9px 13px)"></i>Joint transmission (long dash)</span>
+    </div>
+  </div>
+  <div class="panel-body">
+    <canvas role="img" id="schemeC" height="340" aria-label="Received SINR against user position for four transmission schemes in a two-cell VLC system"></canvas>
+    <div class="matrows">
+      <div><span class="matlab">H (channel)</span><div class="matrix" id="mH"></div></div>
+      <div><span class="matlab">W (ZF precoder)</span><div class="matrix" id="mW"></div></div>
+      <div><span class="matlab">H·W (effective)</span><div class="matrix" id="mE"></div></div>
+    </div>
+    <div class="readouts">
+      <div class="ro"><span>SISO</span><b id="ro_siso" style="color:var(--siso)">—</b></div>
+      <div class="ro"><span>No precoding</span><b id="ro_np" style="color:var(--np)">—</b></div>
+      <div class="ro"><span>Zero-forcing</span><b id="ro_zf" style="color:var(--zf)">—</b></div>
+      <div class="ro"><span>Joint transmission</span><b id="ro_jt" style="color:var(--jt)">—</b></div>
+      <div class="ro"><span>ZF gain over NP</span><b id="ro_zfgain">—</b></div>
+      <div class="ro"><span>Best here</span><b id="ro_best">—</b></div>
+    </div>
+    <div class="ctrls">
+      <div class="ctrl"><label>User position <b id="v_pos">60 cm</b></label><input type="range" id="s_pos" min="0" max="170" step="1" value="60"></div>
+      <div class="ctrl"><label>LED separation <b id="v_sep">170 cm</b></label><input type="range" id="s_sep" min="80" max="300" step="5" value="170"></div>
+      <div class="ctrl"><label>Mount height <b id="v_h2">160 cm</b></label><input type="range" id="s_h2" min="80" max="300" step="5" value="160"></div>
+      <div class="ctrl"><label>Half-intensity angle <b id="v_phi2">17°</b></label><input type="range" id="s_phi2" min="15" max="70" step="1" value="17"></div>
+      <div class="ctrl"><label>CSI error <b id="v_csi">12 %</b></label><input type="range" id="s_csi" min="0" max="25" step="0.5" value="12"></div>
+      <div class="ctrl"><label>Boresight SNR <b id="v_snr0">42 dB</b></label><input type="range" id="s_snr0" min="20" max="55" step="1" value="42"></div>
+    </div>
+  </div>
+</div>
+
+<div class="col">
+<p>Drag the position slider from 0 to 170&nbsp;cm and the three curves trade places in a specific order. Near the lamp, plain reuse is fine — the interferer is 20&nbsp;dB down and precoding only costs you power. Through the inner cell edge, no-precoding collapses while zero-forcing holds a usable level. Approaching the midpoint, the channel matrix turns ill-conditioned, the precoder's norm explodes, and zero-forcing falls off too — while joint transmission, which has been the flattest curve all along, comes out on top.</p>
+
+<p>Raise the CSI error slider and watch zero-forcing degrade from both ends. Perfect cancellation is a modelling assumption; residual cross-talk is what the hardware actually delivers.</p>
+
+<div class="stage"><span class="stage-num">05</span><h2>The floor divides into three</h2></div>
+
+<p>Converting those curves to achievable spectral efficiency and taking the best scheme at each position partitions the service area. This is the paper's real conclusion: not that one scheme wins, but that the floor is zoned, and a practical multi-cell VLC system has to know which zone a user is standing in.</p>
+
+<p>Which scheme &ldquo;wins&rdquo; depends on how you count. Compared link by link, joint transmission wins everywhere by construction &mdash; two lamps pushing one stream can never be worse than one. The comparison that means something counts throughput per cell: reuse and zero-forcing serve two users at once, while joint transmission serves one and the others wait their turn. That is the default below; the second control switches back to the per-link view the paper's figures use.</p>
+</div>
+
+<div class="panel">
+  <div class="panel-head">
+    <span class="panel-title">05 · Spectral efficiency and the region map</span>
+    <div class="legend"><span id="splitTxt" class="mono">—</span></div>
+  </div>
+  <div class="panel-body">
+    <canvas role="img" id="seC" height="300" aria-label="Achievable spectral efficiency against user position for each scheme, with a coloured band showing which scheme is best at each location"></canvas>
+    <div class="bandkey">
+      <span><i aria-hidden="true" style="background:var(--np)"></i>Reuse / SISO — interference negligible</span>
+      <span><i aria-hidden="true" style="background:var(--zf)"></i>Zero-forcing — moderate interference</span>
+      <span><i aria-hidden="true" style="background:var(--jt)"></i>Joint transmission — strong overlap</span>
+    </div>
+    <div class="readouts">
+      <div class="ro"><span>Reuse share</span><b id="ro_pnp">—</b></div>
+      <div class="ro"><span>ZF share</span><b id="ro_pzf">—</b></div>
+      <div class="ro"><span>JT share</span><b id="ro_pjt">—</b></div>
+      <div class="ro"><span>Best-of avg</span><b id="ro_avg">—</b></div>
+      <div class="ro"><span>Best-of worst case</span><b id="ro_min">—</b></div>
+    </div>
+    <div class="ctrls">
+      <div class="ctrl"><label>Reuse preference margin <b id="v_marg">0.5 dB</b></label><input type="range" id="s_marg" min="0" max="4" step="0.1" value="0.5"></div>
+      <div class="ctrl"><label>Rate accounting</label>
+        <div class="seg" id="seg_tdma"><button data-t="1" aria-pressed="true">Per-cell sum rate</button><button data-t="0" aria-pressed="false">Per-link</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="col">
+<p>With the testbed geometry and a 12% CSI error, the model partitions the floor roughly 25 / 44 / 32 against the measured 22 / 46 / 32 &mdash; close enough to say the mechanism is the one the hardware is showing, far enough to remember these are different things. Move any slider and the boundaries move with it. The CSI error slider is the most revealing: at 1% zero-forcing holds almost the whole floor, and by 20% it has surrendered most of the outer edge to joint transmission. How well you know the channel decides how much of the room you can cancel interference in.</p>
+
+<p>The reuse-preference margin is the other honest knob. Plain reuse needs no CSI, no coordination and no scheduler, so a deployment would reasonably keep using it while it is merely close to optimal rather than strictly best. Widening that margin grows the grey band outward from each lamp.</p>
+
+<div class="tablewrap">
+<table>
+  <caption>Table I of the paper — measured achievable spectral efficiency across user positions in the two-cell setup.</caption>
+  <thead><tr><th>Transmission scheme</th><th class="n">Peak (bps/Hz)</th><th class="n">Average</th><th class="n">Minimum</th></tr></thead>
+  <tbody>
+    <tr><td>SU-SISO</td><td class="n">14.12</td><td class="n">8.55</td><td class="n">1.31</td></tr>
+    <tr><td>SU-MISO (joint transmission)</td><td class="n">14.48</td><td class="n">13.86</td><td class="n">13.04</td></tr>
+    <tr><td>MU-MIMO, no precoding</td><td class="n">12.82</td><td class="n">7.85</td><td class="n">1.94</td></tr>
+    <tr><td>MU-MIMO, zero-forcing</td><td class="n">14.08</td><td class="n">12.15</td><td class="n">8.78</td></tr>
+  </tbody>
+</table>
+</div>
+
+<p>The minimum column is the one to read. Single-cell operation bottoms out at 1.31&nbsp;bps/Hz and plain reuse at 1.94 — both effectively outages. Zero-forcing lifts the floor to 8.78. Joint transmission lifts it to 13.04, within 1.5&nbsp;bps/Hz of its own peak: a nearly flat service across the entire 170&nbsp;cm.</p>
+
+<div class="stage"><span class="stage-num">06</span><h2>The bench</h2></div>
+
+<p>None of this is simulation in the paper. The chain is software-defined end to end, which is what makes the scheme comparison a fair one — the same flowgraph, the same hardware, only the precoding changes.</p>
+</div>
+
+<div class="panel">
+  <div class="panel-head"><span class="panel-title">06 · Software-defined VLC chain</span></div>
+  <div class="panel-body">
+    <canvas role="img" id="chainC" height="210" aria-label="Block diagram of the experimental chain from GNU Radio through USRP, amplifier, bias tee and LED, across the optical channel to the photodetector and back"></canvas>
+  </div>
+</div>
+
+<div class="col">
+<div class="tablewrap">
+<table>
+  <caption>Experimental configuration as reported in Section IV.</caption>
+  <thead><tr><th>Element</th><th>Implementation</th><th>Why it matters</th></tr></thead>
+  <tbody>
+    <tr><td>Baseband</td><td>GNU Radio on PC</td><td>Full control of modulation, precoding, equalisation</td></tr>
+    <tr><td>Converter</td><td>USRP-N210</td><td>Real-time transmit and receive on the same host</td></tr>
+    <tr><td>Drive</td><td>HPA in linear region + bias tee</td><td>OFDM's high PAPR punishes any non-linearity</td></tr>
+    <tr><td>Transmitter</td><td>Phosphor-converted white LED</td><td>The bandwidth bottleneck of the whole system</td></tr>
+    <tr><td>Receiver</td><td>Black-silicon PD (PD100A2) with built-in TIA</td><td>Low cost; keeps the receiver-side processing trivial</td></tr>
+    <tr><td>Waveform</td><td>Passband OFDM, QPSK / 16-QAM</td><td>Real-valued output without spending half the spectrum on Hermitian symmetry</td></tr>
+    <tr><td>Geometry</td><td>2 LEDs, 170 cm apart, 160 cm high</td><td>Deliberately overlapping — the interference is the experiment</td></tr>
+  </tbody>
+</table>
+</div>
+
+<div class="stage"><span class="stage-num">07</span><h2>What it adds up to</h2></div>
+
+<ul class="tight">
+  <li><strong>The phosphor sets the ceiling.</strong> Coverage radius lands at 150–160&nbsp;cm not because of optics or noise but because the phosphor's slow conversion caps modulation bandwidth. Blue filtering or micro-LEDs are the way past it.</li>
+  <li><strong>Transmitter-side linear precoding is enough.</strong> No successive interference cancellation, no NOMA at the receiver. A photodiode and an FFT, with the complexity pushed to the lighting controller, which is mains-powered and already networked.</li>
+  <li><strong>Zero-forcing owns the inner edge, joint transmission the outer.</strong> They fail in opposite directions: ZF to noise enhancement as the channel matrix degenerates, JT to its single-user scheduling cost when the overlap is weak.</li>
+  <li><strong>Position is the scheduling variable.</strong> The practical system needs coarse localisation to pick a scheme — and VLC gives that nearly for free, since channel gain is a direct function of geometry.</li>
+</ul>
+
+<p>The open question the split invites is the handover: the boundaries move with mounting height, separation, and detector field of view, so a deployment would need to learn its own zones rather than inherit these. The region map in panel 05 is the tool for that, and it is also where the model stops and the next experiment starts.</p>
+
+</div>
+</div>
+
+<div class="footer">
+<div class="wrap"><div class="col">
+<p><strong>Cite the paper</strong></p>
+<div class="cite">@inproceedings{mummadi2026vlc,
+  author    = {Mummadi, Ramya and Zhang, Xinyu and Dowhuszko, Alexis A. and
+               Rallis, Konstantinos G. and Wichman, Risto and H\"am\"al\"ainen, Jyri},
+  title     = {Experimental Evaluation of Multi-User Multi-Point Transmission
+               Schemes in Multi-cell {VLC} Systems},
+  booktitle = {Proc. 15th Int. Symp. on Communication Systems, Networks and
+               Digital Signal Processing (CSNDSP)},
+  year      = {2026},
+  doi       = {10.1109/CSNDSP68462.2026.11654482}
+}</div>
+<p class="copyright">Supported in part by the Business Finland project Cloudify-6G (grant 8822/31/2022).<br><br>
+© 2026 IEEE. Personal use of this material is permitted. Permission from IEEE must be obtained for all other uses, in any current or future media, including reprinting/republishing this material for advertising or promotional purposes, creating new collective works, for resale or redistribution to servers or lists, or reuse of any copyrighted component of this work in other works.<br><br>
+This page is an explanatory companion. The interactive panels are models built from the paper's published equations; all measured values are drawn from the published results and labelled as such.</p>
+</div></div>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+/* ---------- plumbing ---------- */
+var panels=[];
+function tok(n){return getComputedStyle(document.documentElement).getPropertyValue(n).trim();}
+function fit(cv){
+  // The CSS height is captured once: assigning cv.height rewrites the height
+  // attribute, so re-reading it each pass would compound on every redraw.
+  if(cv.__h===undefined){
+    var a=cv.getAttribute('height');
+    cv.__h=a?parseFloat(a):cv.getBoundingClientRect().height;
+    cv.style.height=cv.__h+'px';
+  }
+  var h=cv.__h, d=Math.min(2,window.devicePixelRatio||1);
+  var w=cv.getBoundingClientRect().width;
+  var pw=Math.max(1,Math.round(w*d)), ph=Math.max(1,Math.round(h*d));
+  var c=cv.getContext('2d');
+  if(cv.width!==pw||cv.height!==ph){cv.width=pw;cv.height=ph;}
+  else c.clearRect(0,0,pw,ph);
+  c.setTransform(d,0,0,d,0,0);
+  return {c:c,w:w,h:h};
+}
+function reg(fn){panels.push(fn);fn();}
+function redraw(){for(var i=0;i<panels.length;i++)panels[i]();}
+var rt; window.addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(redraw,90);});
+if(window.matchMedia){var mq=window.matchMedia('(prefers-color-scheme: dark)');
+  if(mq.addEventListener)mq.addEventListener('change',redraw);else if(mq.addListener)mq.addListener(redraw);}
+new MutationObserver(redraw).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+
+function on(id,fn){var e=document.getElementById(id); if(e)e.addEventListener('input',fn); return e;}
+function val(id){return parseFloat(document.getElementById(id).value);}
+function set(id,t){var e=document.getElementById(id); if(e)e.textContent=t;}
+function dB(x){return 10*Math.log10(Math.max(x,1e-30));}
+
+function gauss(){var u=0,v=0;while(u===0)u=Math.random();while(v===0)v=Math.random();
+  return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+function erfc(x){
+  var z=Math.abs(x), t=1/(1+z/2);
+  var r=t*Math.exp(-z*z-1.26551223+t*(1.00002368+t*(0.37409196+t*(0.09678418+
+    t*(-0.18628806+t*(0.27886807+t*(-1.13520398+t*(1.48851587+t*(-0.82215223+t*0.17087277)))))))));
+  return x>=0?r:2-r;
+}
+
+/* ---------- axes helper ---------- */
+function axes(c,w,h,o){
+  var pad={l:o.l||54,r:o.r||16,t:o.t||14,b:o.b||34};
+  var iw=w-pad.l-pad.r, ih=h-pad.t-pad.b;
+  var line=tok('--line'), soft=tok('--line-soft'), ink3=tok('--ink-3');
+  function X(x){return pad.l+(x-o.xmin)/(o.xmax-o.xmin)*iw;}
+  function Y(y){
+    if(o.ylog){var a=Math.log10(o.ymin),b=Math.log10(o.ymax);
+      return pad.t+ih-(Math.log10(Math.max(y,o.ymin*1e-3))-a)/(b-a)*ih;}
+    return pad.t+ih-(y-o.ymin)/(o.ymax-o.ymin)*ih;
+  }
+  c.save();
+  c.strokeStyle=soft; c.lineWidth=1;
+  c.font='500 11px "IBM Plex Mono",monospace'; c.fillStyle=ink3;
+  var i,t;
+  var yt=o.yticks||[];
+  for(i=0;i<yt.length;i++){
+    t=yt[i]; var yy=Math.round(Y(t))+.5;
+    c.beginPath();c.moveTo(pad.l,yy);c.lineTo(pad.l+iw,yy);c.stroke();
+    c.textAlign='right';c.textBaseline='middle';
+    c.fillText(o.yfmt?o.yfmt(t):String(t),pad.l-8,yy);
+  }
+  var xt=o.xticks||[];
+  for(i=0;i<xt.length;i++){
+    t=xt[i]; var xx=Math.round(X(t))+.5;
+    c.beginPath();c.moveTo(xx,pad.t);c.lineTo(xx,pad.t+ih);c.strokeStyle=soft;c.stroke();
+    c.textAlign='center';c.textBaseline='top';
+    c.fillText(o.xfmt?o.xfmt(t):String(t),xx,pad.t+ih+7);
+  }
+  c.strokeStyle=line;c.lineWidth=1;
+  c.beginPath();c.moveTo(pad.l+.5,pad.t);c.lineTo(pad.l+.5,pad.t+ih+.5);c.lineTo(pad.l+iw,pad.t+ih+.5);c.stroke();
+  if(o.xlabel){c.textAlign='right';c.textBaseline='top';c.fillStyle=ink3;
+    c.font='500 11px "IBM Plex Mono",monospace';c.fillText(o.xlabel,pad.l+iw,pad.t+ih+19);}
+  if(o.ylabel){c.save();c.translate(12,pad.t+2);c.rotate(-Math.PI/2);c.textAlign='right';c.textBaseline='top';
+    c.fillText(o.ylabel,0,0);c.restore();}
+  c.restore();
+  return {X:X,Y:Y,pad:pad,iw:iw,ih:ih};
+}
+function curve(c,ax,xs,ys,color,width,dash){
+  c.save();c.beginPath();c.strokeStyle=color;c.lineWidth=width||2;c.lineJoin='round';
+  if(dash)c.setLineDash(dash);
+  var started=false;
+  for(var i=0;i<xs.length;i++){
+    if(!isFinite(ys[i])){started=false;continue;}
+    var px=ax.X(xs[i]),py=ax.Y(ys[i]);
+    if(py<ax.pad.t-200||py>ax.pad.t+ax.ih+200){started=false;continue;}
+    if(!started){c.moveTo(px,py);started=true;}else c.lineTo(px,py);
+  }
+  c.stroke();c.restore();
+}
+function dot(c,x,y,color,r){c.save();c.beginPath();c.fillStyle=color;c.arc(x,y,r||4,0,7);c.fill();c.restore();}
+function tag(c,x,y,text,color){
+  c.save();c.font='600 10px "IBM Plex Mono",monospace';
+  var w=c.measureText(text).width+10;
+  c.fillStyle=color;c.globalAlpha=.92;
+  c.beginPath();c.rect(x,y-7,w,15);c.fill();
+  c.globalAlpha=1;c.fillStyle='#fff';c.textAlign='left';c.textBaseline='middle';
+  c.fillText(text,x+5,y+.5);c.restore();
+}
+
+/* ================= HERO ================= */
+(function(){
+  var cv=document.getElementById('heroC'); if(!cv)return;
+  var t=0, reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function draw(){
+    var f=fit(cv),c=f.c,w=f.w,h=f.h;
+    var bg=tok('--surface'),ink=tok('--ink'),ink3=tok('--ink-3'),A=tok('--cellA'),B=tok('--cellB'),line=tok('--line-soft');
+    c.fillStyle=bg;c.fillRect(0,0,w,h);
+    var ceil=36, floor=h*0.60, L1=w*0.26, L2=w*0.74;
+    // light cones
+    function cone(x,col){
+      var g=c.createRadialGradient(x,ceil,4,x,floor+30,Math.max(w*0.34,120));
+      g.addColorStop(0,col);g.addColorStop(1,'rgba(0,0,0,0)');
+      c.save();c.globalAlpha=.30;c.fillStyle=g;
+      c.beginPath();c.moveTo(x,ceil);
+      c.lineTo(x-w*0.30,floor+26);c.lineTo(x+w*0.30,floor+26);c.closePath();c.fill();c.restore();
+    }
+    cone(L1,A);cone(L2,B);
+    // ceiling + floor
+    c.strokeStyle=tok('--line');c.lineWidth=1;
+    c.beginPath();c.moveTo(0,ceil+.5);c.lineTo(w,ceil+.5);c.stroke();
+    c.beginPath();c.moveTo(0,floor+.5);c.lineTo(w,floor+.5);c.stroke();
+    // lamps
+    [[L1,A],[L2,B]].forEach(function(p){
+      c.fillStyle=p[1];
+      c.beginPath();c.roundRect?c.roundRect(p[0]-17,ceil-9,34,10,2):c.rect(p[0]-17,ceil-9,34,10);c.fill();
+    });
+    c.font='600 9.5px "IBM Plex Mono",monospace';c.fillStyle=ink3;c.textAlign='center';
+    c.fillText('LED 1',L1,ceil-15);c.fillText('LED 2',L2,ceil-15);
+    // moving PD
+    var ph=reduce?0.5:(Math.sin(t/120)*0.5+0.5);
+    var px=L1+(L2-L1)*ph;
+    c.fillStyle=ink;c.beginPath();c.rect(px-8,floor-7,16,7);c.fill();
+    c.fillStyle=ink3;c.font='600 9.5px "IBM Plex Mono",monospace';c.fillText('PD',px,floor+14);
+    // SIR curve below
+    var top=floor+26, bot=h-16, N=160, xs=[],ys=[];
+    var sep=L2-L1, hh=(floor-ceil);
+    function g(dx){var d=Math.sqrt(dx*dx+hh*hh);var cs=hh/d;return Math.pow(cs,5.8)/(d*d);}
+    for(var i=0;i<=N;i++){
+      var X=L1+(L2-L1)*(i/N);
+      var a=g(X-L1), b=g(X-L2);
+      xs.push(X); ys.push(10*Math.log10(Math.max(a,b)/Math.min(a,b)));
+    }
+    var mx=0;for(i=0;i<ys.length;i++)mx=Math.max(mx,ys[i]);
+    c.save();c.strokeStyle=line;c.beginPath();c.moveTo(0,top+.5);c.lineTo(w,top+.5);c.stroke();c.restore();
+    c.save();c.beginPath();c.lineWidth=2;c.strokeStyle=A;
+    for(i=0;i<xs.length;i++){
+      var py=bot-(ys[i]/mx)*(bot-top-10);
+      if(i===0)c.moveTo(xs[i],py);else c.lineTo(xs[i],py);
+    }
+    c.stroke();c.restore();
+    // marker on curve
+    var a0=g(px-L1),b0=g(px-L2);
+    var sir=10*Math.log10(Math.max(a0,b0)/Math.min(a0,b0));
+    var my=bot-(sir/mx)*(bot-top-10);
+    c.save();c.setLineDash([3,4]);c.strokeStyle=ink3;c.lineWidth=1;
+    c.beginPath();c.moveTo(px,floor);c.lineTo(px,my);c.stroke();c.restore();
+    dot(c,px,my,A,4.5);
+    c.font='500 11px "IBM Plex Mono",monospace';c.fillStyle=ink3;c.textAlign='left';
+    c.fillText('signal-to-interference ratio',10,top+13);
+    c.textAlign='right';c.fillStyle=ink;c.font='600 12px "IBM Plex Mono",monospace';
+    c.fillText(sir.toFixed(1)+' dB',w-10,top+14);
+  }
+  reg(draw);
+  if(!reduce)(function loop(){t++;draw();requestAnimationFrame(loop);})();
+})();
+
+/* ================= 01 LAMBERTIAN ================= */
+(function(){
+  var cv=document.getElementById('lamC'); if(!cv)return;
+  function H(x,h,phiHalf,fov,areaCm2){
+    var m=-Math.LN2/Math.log(Math.cos(phiHalf*Math.PI/180));
+    var d=Math.sqrt(x*x+h*h), cs=h/d, psi=Math.acos(cs)*180/Math.PI;
+    if(psi>fov)return {H:0,d:d,psi:psi,m:m};
+    var A=areaCm2*1e-4, n=1.5, g=(n*n)/Math.pow(Math.sin(fov*Math.PI/180),2);
+    var val=(m+1)*A/(2*Math.PI*d*d)*Math.pow(cs,m)*1*g*cs;
+    return {H:val,d:d,psi:psi,m:m};
+  }
+  function draw(){
+    var f=fit(cv),c=f.c,w=f.w,h=f.h;
+    var hh=val('s_h'),phi=val('s_phi'),fov=val('s_fov'),area=val('s_area'),x=val('s_x');
+    set('v_h',hh.toFixed(2)+' m');set('v_phi',phi+'°');set('v_fov',fov+'°');
+    set('v_area',area.toFixed(1)+' cm²');set('v_x',x.toFixed(2)+' m');
+    var bg=tok('--surface'),A=tok('--cellA'),ink=tok('--ink'),ink3=tok('--ink-3'),line=tok('--line');
+    c.fillStyle=bg;c.fillRect(0,0,w,h);
+    var splitX=Math.min(300,w*0.38);
+    // --- left: geometry ---
+    c.save();c.beginPath();c.rect(0,0,splitX,h);c.clip();
+    var cx=splitX/2, ceil=26, floorY=h-40;
+    var scaleY=(floorY-ceil)/Math.max(hh,0.1), scale=Math.min(scaleY,(splitX/2-14)/2.6);
+    var fy=ceil+hh*scale;
+    c.strokeStyle=line;c.beginPath();c.moveTo(0,ceil+.5);c.lineTo(splitX,ceil+.5);c.stroke();
+    c.beginPath();c.moveTo(0,fy+.5);c.lineTo(splitX,fy+.5);c.stroke();
+    // lobe
+    var m=-Math.LN2/Math.log(Math.cos(phi*Math.PI/180)), R=Math.min(fy-ceil,splitX/2)*0.96;
+    c.save();c.globalAlpha=.26;c.fillStyle=A;c.beginPath();c.moveTo(cx,ceil);
+    for(var a=-Math.PI/2;a<=Math.PI/2;a+=0.02){
+      var r=R*Math.pow(Math.max(Math.cos(a),0),m);
+      c.lineTo(cx+r*Math.sin(a),ceil+r*Math.cos(a));
+    }
+    c.closePath();c.fill();c.restore();
+    // fov cone from PD
+    var pxp=cx+x*scale;
+    c.save();c.globalAlpha=.16;c.fillStyle=ink3;c.beginPath();c.moveTo(pxp,fy);
+    var fr=fy-ceil+20, fa=fov*Math.PI/180;
+    c.lineTo(pxp-fr*Math.sin(fa),fy-fr*Math.cos(fa));
+    c.arc(pxp,fy,fr,-Math.PI/2-fa,-Math.PI/2+fa);
+    c.closePath();c.fill();c.restore();
+    // ray
+    var r0=H(x,hh,phi,fov,area);
+    c.save();c.strokeStyle=r0.H>0?A:ink3;c.lineWidth=1.5;if(r0.H<=0)c.setLineDash([3,4]);
+    c.beginPath();c.moveTo(cx,ceil);c.lineTo(pxp,fy);c.stroke();c.restore();
+    c.fillStyle=A;c.beginPath();c.rect(cx-15,ceil-8,30,9);c.fill();
+    c.fillStyle=ink;c.beginPath();c.rect(pxp-7,fy-6,14,6);c.fill();
+    c.font='600 9.5px "IBM Plex Mono",monospace';c.fillStyle=ink3;c.textAlign='center';
+    c.fillText('LED',cx,ceil-13);c.fillText('PD',pxp,fy+15);
+    c.textAlign='left';c.fillText('geometry',8,h-14);
+    c.restore();
+    c.strokeStyle=line;c.beginPath();c.moveTo(splitX+.5,0);c.lineTo(splitX+.5,h);c.stroke();
+    // --- right: gain curve ---
+    c.save();c.translate(splitX,0);
+    var pw=w-splitX;
+    var N=240,xs=[],ys=[],peak=H(0,hh,phi,fov,area).H;
+    for(var i=0;i<=N;i++){var xv=-2.5+5*(i/N);xs.push(xv);ys.push(H(xv,hh,phi,fov,area).H/Math.max(peak,1e-20));}
+    var ax=axes(c,pw,h,{xmin:-2.5,xmax:2.5,ymin:0,ymax:1.05,
+      xticks:[-2,-1,0,1,2],yticks:[0,0.25,0.5,0.75,1],
+      yfmt:function(v){return v.toFixed(2);},xfmt:function(v){return v+'m';},
+      xlabel:'horizontal position',ylabel:'H / H(0)',l:46,r:14});
+    // shade in-FOV region
+    curve(c,ax,xs,ys,A,2.2);
+    c.save();c.globalAlpha=.12;c.fillStyle=A;c.beginPath();
+    c.moveTo(ax.X(-2.5),ax.Y(0));
+    for(i=0;i<xs.length;i++)c.lineTo(ax.X(xs[i]),ax.Y(ys[i]));
+    c.lineTo(ax.X(2.5),ax.Y(0));c.closePath();c.fill();c.restore();
+    var rel=r0.H/Math.max(peak,1e-20);
+    c.save();c.setLineDash([3,4]);c.strokeStyle=ink3;c.lineWidth=1;
+    c.beginPath();c.moveTo(ax.X(x),ax.pad.t);c.lineTo(ax.X(x),ax.pad.t+ax.ih);c.stroke();c.restore();
+    dot(c,ax.X(x),ax.Y(rel),A,4.5);
+    c.restore();
+    set('ro_m',r0.m.toFixed(2));
+    set('ro_d',r0.d.toFixed(2)+' m');
+    set('ro_psi',r0.psi.toFixed(1)+'°');
+    set('ro_H',r0.H>0?(r0.H*1e6).toPrecision(3)+'µ':'0 (cut off)');
+    set('ro_rel',r0.H>0?dB(rel).toFixed(1)+' dB':'—');
+  }
+  ['s_h','s_phi','s_fov','s_area','s_x'].forEach(function(i){on(i,draw);});
+  reg(draw);
+})();
+
+/* ================= 02 OFDM ================= */
+(function(){
+  var cv=document.getElementById('ofdmC'); if(!cv)return;
+  var M=4, seed=[];
+  function qam(M,k){ // returns [I,Q] normalised to unit average power
+    if(M===4){var i=(k&1)?1:-1,q=(k&2)?1:-1;return [i/Math.SQRT2,q/Math.SQRT2];}
+    var lv=[-3,-1,1,3];
+    return [lv[k&3]/Math.sqrt(10),lv[(k>>2)&3]/Math.sqrt(10)];
+  }
+  function reroll(n){seed=[];for(var i=0;i<n;i++)seed.push(Math.floor(Math.random()*M));}
+  function draw(){
+    var f=fit(cv),c=f.c,w=f.w,h=f.h;
+    var N=val('s_nsc'),amp=val('s_amp'),bias=val('s_bias'),snr=val('s_snr');
+    set('v_nsc',N);set('v_amp',amp.toFixed(2));set('v_bias',bias.toFixed(2));set('v_snr',snr.toFixed(1)+' dB');
+    if(seed.length!==N)reroll(N);
+    var bg=tok('--surface'),A=tok('--cellA'),B=tok('--cellB'),ink=tok('--ink'),ink3=tok('--ink-3'),np=tok('--np'),line=tok('--line');
+    c.fillStyle=bg;c.fillRect(0,0,w,h);
+    // build time-domain passband OFDM (direct synthesis, oversampled)
+    var OS=8, L=N*OS, y=new Float64Array(L), fIF=0.28;
+    for(var k=0;k<N;k++){
+      var s=qam(M,seed[k]), fk=(k+1)/(2*N);
+      for(var n=0;n<L;n++){
+        var ph=2*Math.PI*(fIF+fk*0.6)*n/OS;
+        y[n]+=s[0]*Math.cos(ph)-s[1]*Math.sin(ph);
+      }
+    }
+    var rms=0;for(n=0;n<L;n++)rms+=y[n]*y[n];rms=Math.sqrt(rms/L);
+    var pk=0;for(n=0;n<L;n++)pk=Math.max(pk,Math.abs(y[n]));
+    var papr=20*Math.log10(pk/rms);
+    var drive=new Float64Array(L),clipped=0;
+    for(n=0;n<L;n++){
+      var v=bias+amp*y[n]/(rms*3.2);
+      if(v<0){v=0;clipped++;}else if(v>1){v=1;clipped++;}
+      drive[n]=v;
+    }
+    var splitX=Math.min(w*0.58,w-230);
+    // --- waveform ---
+    c.save();
+    var ax=axes(c,splitX,h,{xmin:0,xmax:L-1,ymin:-0.08,ymax:1.08,
+      xticks:[],yticks:[0,0.25,0.5,0.75,1],yfmt:function(v){return v.toFixed(2);},
+      xlabel:'time (samples)',ylabel:'LED drive (normalised)',l:50,r:12});
+    [[0,'0 — light off'],[1,'1 — max drive']].forEach(function(p){
+      c.save();c.setLineDash([4,4]);c.strokeStyle=np;c.lineWidth=1;
+      c.beginPath();c.moveTo(ax.pad.l,ax.Y(p[0])+.5);c.lineTo(ax.pad.l+ax.iw,ax.Y(p[0])+.5);c.stroke();c.restore();
+    });
+    c.save();c.setLineDash([2,3]);c.strokeStyle=np;c.lineWidth=1;
+    c.beginPath();c.moveTo(ax.pad.l,ax.Y(bias)+.5);c.lineTo(ax.pad.l+ax.iw,ax.Y(bias)+.5);c.stroke();c.restore();
+    c.save();c.font='500 9.5px "IBM Plex Mono",monospace';c.fillStyle=np;c.textAlign='left';
+    c.fillText('DC bias',ax.pad.l+4,ax.Y(bias)-5);c.restore();
+    var xs=[],ys=[];for(n=0;n<L;n++){xs.push(n);ys.push(drive[n]);}
+    curve(c,ax,xs,ys,A,1.4);
+    c.restore();
+    c.strokeStyle=line;c.beginPath();c.moveTo(splitX+.5,0);c.lineTo(splitX+.5,h);c.stroke();
+    // --- constellation ---
+    c.save();c.translate(splitX,0);
+    var cw=w-splitX, side=Math.min(cw-40,h-54), ox=(cw-side)/2, oy=(h-side)/2-6;
+    c.strokeStyle=tok('--line-soft');c.lineWidth=1;
+    c.strokeRect(ox+.5,oy+.5,side,side);
+    c.beginPath();c.moveTo(ox+side/2+.5,oy);c.lineTo(ox+side/2+.5,oy+side);
+    c.moveTo(ox,oy+side/2+.5);c.lineTo(ox+side,oy+side/2+.5);c.stroke();
+    var lim=M===4?1.55:1.75;
+    function PX(v){return ox+side/2+v/lim*(side/2);}
+    function PY(v){return oy+side/2-v/lim*(side/2);}
+    var sigma=Math.sqrt(Math.pow(10,-snr/10)/2);
+    // clipping-induced distortion folded in
+    var clipFrac=clipped/L, extra=clipFrac*0.55;
+    var errs=0, evmAcc=0, cnt=0;
+    c.save();c.globalAlpha=.75;c.fillStyle=B;
+    for(k=0;k<N;k++){
+      for(var rep=0;rep<6;rep++){
+        var s0=qam(M,seed[k]);
+        var ri=s0[0]+gauss()*(sigma+extra), rq=s0[1]+gauss()*(sigma+extra);
+        c.beginPath();c.arc(PX(ri),PY(rq),1.7,0,7);c.fill();
+        evmAcc+=(ri-s0[0])*(ri-s0[0])+(rq-s0[1])*(rq-s0[1]);cnt++;
+        // nearest-point decision
+        var best=0,bd=1e9;
+        for(var m2=0;m2<M;m2++){var p=qam(M,m2);var d2=(ri-p[0])*(ri-p[0])+(rq-p[1])*(rq-p[1]);
+          if(d2<bd){bd=d2;best=m2;}}
+        if(best!==seed[k])errs++;
+      }
+    }
+    c.restore();
+    c.save();c.fillStyle=A;
+    for(k=0;k<M;k++){var p2=qam(M,k);c.beginPath();c.arc(PX(p2[0]),PY(p2[1]),3.2,0,7);c.fill();
+      c.strokeStyle=tok('--surface');c.lineWidth=1.2;c.stroke();}
+    c.restore();
+    c.font='500 9.5px "IBM Plex Mono",monospace';c.fillStyle=ink3;c.textAlign='center';
+    c.fillText(M===4?'QPSK · received':'16-QAM · received',ox+side/2,oy+side+16);
+    c.restore();
+    set('ro_papr',papr.toFixed(1)+' dB');
+    set('ro_clip',(clipFrac*100).toFixed(1)+' %');
+    set('ro_evm',(Math.sqrt(evmAcc/cnt)*100).toFixed(1)+' %');
+    set('ro_bps',Math.log2(M).toFixed(0));
+    set('ro_ser',errs+' / '+cnt);
+  }
+  ['s_nsc','s_amp','s_bias','s_snr'].forEach(function(i){on(i,draw);});
+  var sg=document.getElementById('seg_mod');
+  sg.addEventListener('click',function(e){
+    var b=e.target.closest('button'); if(!b)return;
+    Array.prototype.forEach.call(sg.children,function(x){x.setAttribute('aria-pressed',String(x===b));});
+    M=parseInt(b.getAttribute('data-m'),10); seed=[]; draw();
+  });
+  document.getElementById('b_reroll').addEventListener('click',function(){seed=[];draw();});
+  reg(draw);
+})();
+
+/* ================= 03 BER ================= */
+(function(){
+  var cv=document.getElementById('berC'); if(!cv)return;
+  function berQ(g){return 0.5*erfc(Math.sqrt(g));}
+  function ber16(g){return 0.1*erfc(Math.sqrt(0.2*g));}
+  function draw(){
+    var f=fit(cv),c=f.c,w=f.w,h=f.h;
+    var e=val('s_ebn0'), tgtE=val('s_tgt'), tgt=Math.pow(10,-tgtE);
+    set('v_ebn0',e.toFixed(2)+' dB'); set('v_tgt','1e-'+tgtE);
+    c.fillStyle=tok('--surface');c.fillRect(0,0,w,h);
+    var A=tok('--cellA'),B=tok('--cellB'),ink3=tok('--ink-3');
+    var ax=axes(c,w,h,{xmin:0,xmax:22,ymin:1e-7,ymax:1,ylog:true,
+      xticks:[0,4,8,12,16,20],yticks:[1,1e-1,1e-2,1e-3,1e-4,1e-5,1e-6,1e-7],
+      yfmt:function(v){return v===1?'1':'1e'+Math.round(Math.log10(v));},
+      xfmt:function(v){return v+'dB';},
+      xlabel:'Eb/N0',ylabel:'bit error rate',l:56,r:14});
+    var xs=[],q=[],s=[];
+    for(var i=0;i<=440;i++){var x=i/20; var g=Math.pow(10,x/10);
+      xs.push(x);q.push(berQ(g));s.push(ber16(g));}
+    // target line
+    c.save();c.setLineDash([4,4]);c.strokeStyle=ink3;c.lineWidth=1;
+    c.beginPath();c.moveTo(ax.pad.l,ax.Y(tgt)+.5);c.lineTo(ax.pad.l+ax.iw,ax.Y(tgt)+.5);c.stroke();
+    c.font='500 9.5px "IBM Plex Mono",monospace';c.fillStyle=ink3;c.textAlign='left';c.textBaseline='bottom';
+    c.fillText('target',ax.pad.l+4,ax.Y(tgt)-3);c.restore();
+    curve(c,ax,xs,s,A,2.2,[9,4]);
+    curve(c,ax,xs,q,B,2.2);
+    var g0=Math.pow(10,e/10), bq=berQ(g0), b16=ber16(g0);
+    c.save();c.setLineDash([3,4]);c.strokeStyle=ink3;
+    c.beginPath();c.moveTo(ax.X(e),ax.pad.t);c.lineTo(ax.X(e),ax.pad.t+ax.ih);c.stroke();c.restore();
+    if(bq>=1e-7)dot(c,ax.X(e),ax.Y(bq),B,4.5);
+    if(b16>=1e-7)dot(c,ax.X(e),ax.Y(b16),A,4.5);
+    // required Eb/N0 for target
+    function solve(fn){var lo=0,hi=30;for(var k=0;k<60;k++){var m=(lo+hi)/2;
+      if(fn(Math.pow(10,m/10))>tgt)lo=m;else hi=m;}return (lo+hi)/2;}
+    var rq=solve(berQ), r16=solve(ber16);
+    if(rq<22)tag(c,ax.X(rq)+6,ax.Y(tgt),'QPSK '+rq.toFixed(1)+'dB',B);
+    if(r16<22)tag(c,ax.X(r16)+6,ax.Y(tgt)-18,'16QAM '+r16.toFixed(1)+'dB',A);
+    set('ro_ebn0',e.toFixed(2)+' dB');
+    set('ro_bq',bq<1e-7?'<1e-7':bq.toExponential(1));
+    set('ro_b16',b16<1e-7?'<1e-7':b16.toExponential(1));
+    set('ro_gap',(r16-rq).toFixed(1)+' dB');
+  }
+  ['s_ebn0','s_tgt'].forEach(function(i){on(i,draw);});
+  reg(draw);
+})();
+
+/* ================= shared two-cell model ================= */
+var TC={
+  gain:function(dxCm,hCm,phiHalf){
+    var m=-Math.LN2/Math.log(Math.cos(phiHalf*Math.PI/180));
+    var dx=dxCm/100,hm=hCm/100;
+    var d=Math.sqrt(dx*dx+hm*hm), cs=hm/d;
+    return Math.pow(cs,m+1)/(d*d);
+  },
+  state:function(){
+    return {sep:val('s_sep'),h:val('s_h2'),phi:val('s_phi2'),
+            csi:val('s_csi')/100,snr0:val('s_snr0')};
+  },
+  at:function(x,st){
+    var a=TC.gain(x,st.h,st.phi), b=TC.gain(x-st.sep,st.h,st.phi);
+    var peak=TC.gain(0,st.h,st.phi);
+    var K=Math.sqrt(Math.pow(10,st.snr0/10))/peak;   // sigma = 1
+    var A=K*a, B=K*b;
+    var siso=A*A;
+    var np=A*A/(B*B+1);
+    // ZF with per-stream power normalisation: det = a^2-b^2 for symmetric H=[[a,b],[b,a]]
+    var det=a*a-b*b;
+    // At the exact midpoint a==b and the matrix is singular; clamp so the
+    // displayed precoder stays finite instead of rendering NaN.
+    var ds=Math.abs(det)<1e-15?(det<0?-1e-15:1e-15):det;
+    var wn=Math.sqrt(a*a+b*b)/Math.abs(ds);                   // ||w_1||, grows as H degenerates
+    var amp=K/wn;                                             // effective amplitude after column normalisation
+    var resid=st.csi*K*b;                                     // residual cross-talk from imperfect CSI
+    var zf=amp*amp/(resid*resid+1);
+    var jt=(A+B)*(A+B);
+    var W=[[a/ds,-b/ds],[-b/ds,a/ds]];
+    var E=[[a*W[0][0]+b*W[1][0], a*W[0][1]+b*W[1][1]],
+           [b*W[0][0]+a*W[1][0], b*W[0][1]+a*W[1][1]]];
+    return {a:a,b:b,A:A,B:B,siso:siso,np:np,zf:zf,jt:jt,
+            H:[[a,b],[b,a]],W:W,E:E};
+  }
+};
+
+/* ================= 04 SCHEMES ================= */
+(function(){
+  var cv=document.getElementById('schemeC'); if(!cv)return;
+  function mat(el,m,fmt){
+    el.innerHTML='';
+    for(var i=0;i<2;i++)for(var j=0;j<2;j++){
+      var d=document.createElement('div');
+      d.textContent=fmt(m[i][j]);
+      el.appendChild(d);
+    }
+  }
+  function draw(){
+    var f=fit(cv),c=f.c,w=f.w,h=f.h;
+    var st=TC.state(), pos=val('s_pos');
+    if(pos>st.sep){pos=st.sep;document.getElementById('s_pos').value=pos;}
+    document.getElementById('s_pos').max=st.sep;
+    set('v_pos',pos.toFixed(0)+' cm');set('v_sep',st.sep+' cm');set('v_h2',st.h+' cm');
+    set('v_phi2',st.phi+'°');set('v_csi',(st.csi*100).toFixed(1)+' %');set('v_snr0',st.snr0+' dB');
+    c.fillStyle=tok('--surface');c.fillRect(0,0,w,h);
+    var cSiso=tok('--siso'),cNp=tok('--np'),cZf=tok('--zf'),cJt=tok('--jt'),ink3=tok('--ink-3');
+    var N=260,xs=[],Ysi=[],Ynp=[],Yzf=[],Yjt=[];
+    for(var i=0;i<=N;i++){
+      var x=st.sep*(i/N), r=TC.at(x,st);
+      xs.push(x);Ysi.push(dB(r.siso));Ynp.push(dB(r.np));Yzf.push(dB(r.zf));Yjt.push(dB(r.jt));
+    }
+    var ymax=Math.ceil(st.snr0/5)*5+5, ymin=-5;
+    var yt=[];for(var v=ymin;v<=ymax;v+=10)yt.push(v);
+    var xt=[];for(v=0;v<=st.sep;v+=Math.max(10,Math.round(st.sep/8/10)*10))xt.push(v);
+    var ax=axes(c,w,h,{xmin:0,xmax:st.sep,ymin:ymin,ymax:ymax,xticks:xt,yticks:yt,
+      yfmt:function(v){return v+'';},xfmt:function(v){return v+'';},
+      xlabel:'user position (cm)',ylabel:'received SINR (dB)',l:52,r:16,b:38});
+    // lamp markers
+    [0,st.sep].forEach(function(p,idx){
+      c.save();c.fillStyle=idx===0?tok('--cellA'):tok('--cellB');
+      c.beginPath();c.rect(ax.X(p)-11,ax.pad.t+2,22,6);c.fill();c.restore();
+    });
+    curve(c,ax,xs,Ysi,cSiso,1.6,[5,4]);
+    curve(c,ax,xs,Ynp,cNp,2,[2,3]);
+    curve(c,ax,xs,Yzf,cZf,2.4);
+    curve(c,ax,xs,Yjt,cJt,2.4,[9,4]);
+    var r0=TC.at(pos,st);
+    c.save();c.setLineDash([3,4]);c.strokeStyle=ink3;c.lineWidth=1;
+    c.beginPath();c.moveTo(ax.X(pos),ax.pad.t);c.lineTo(ax.X(pos),ax.pad.t+ax.ih);c.stroke();c.restore();
+    [[r0.np,cNp],[r0.zf,cZf],[r0.jt,cJt],[r0.siso,cSiso]].forEach(function(p){
+      var yy=dB(p[0]); if(yy>ymin&&yy<ymax)dot(c,ax.X(pos),ax.Y(yy),p[1],4.2);
+    });
+    set('ro_siso',dB(r0.siso).toFixed(1)+' dB');
+    set('ro_np',dB(r0.np).toFixed(1)+' dB');
+    set('ro_zf',dB(r0.zf).toFixed(1)+' dB');
+    set('ro_jt',dB(r0.jt).toFixed(1)+' dB');
+    set('ro_zfgain',(dB(r0.zf)-dB(r0.np)).toFixed(1)+' dB');
+    var best=[['Reuse',r0.np],['ZF',r0.zf],['JT',r0.jt]].sort(function(p,q){return q[1]-p[1];})[0];
+    set('ro_best',best[0]);
+    var e=document.getElementById('ro_best');
+    e.style.color=best[0]==='ZF'?cZf:(best[0]==='JT'?cJt:cNp);
+    function fmt(v){
+      if(!isFinite(v))return '--';
+      var m=Math.abs(v);
+      if(m===0)return '0.000';
+      if(m>=1e4||m<1e-3)return v.toExponential(1);
+      return v.toFixed(m>=100?1:3);
+    }
+    mat(document.getElementById('mH'),r0.H,fmt);
+    mat(document.getElementById('mW'),r0.W,fmt);
+    mat(document.getElementById('mE'),r0.E,fmt);
+  }
+  ['s_pos','s_sep','s_h2','s_phi2','s_csi','s_snr0'].forEach(function(i){on(i,function(){draw();seDraw();});});
+  reg(draw);
+  window.__schemeDraw=draw;
+  var seDraw=function(){ if(window.__seDraw)window.__seDraw(); };
+})();
+
+/* ================= 05 SPECTRAL EFFICIENCY + REGIONS ================= */
+(function(){
+  var cv=document.getElementById('seC'); if(!cv)return;
+  var tdma=1;
+  function draw(){
+    var f=fit(cv),c=f.c,w=f.w,h=f.h;
+    var st=TC.state(), marg=val('s_marg');
+    set('v_marg',marg.toFixed(1)+' dB');
+    c.fillStyle=tok('--surface');c.fillRect(0,0,w,h);
+    var cNp=tok('--np'),cZf=tok('--zf'),cJt=tok('--jt'),cSi=tok('--siso');
+    var N=300,xs=[],Snp=[],Szf=[],Sjt=[],Ssi=[],win=[];
+    var mLin=Math.pow(10,marg/10);
+    var cnt={np:0,zf:0,jt:0}, tot=0, sum=0, mn=1e9;
+    for(var i=0;i<=N;i++){
+      var x=st.sep*(i/N), r=TC.at(x,st);
+      var sJt=Math.log2(1+r.jt)*(tdma?0.5:1);
+      var sNp=Math.log2(1+r.np), sZf=Math.log2(1+r.zf), sSi=Math.log2(1+r.siso);
+      xs.push(x);Snp.push(sNp);Szf.push(sZf);Sjt.push(sJt);Ssi.push(sSi);
+      var cand=[['np',sNp*mLin],['zf',sZf],['jt',sJt]];
+      cand.sort(function(p,q){return q[1]-p[1];});
+      var k=cand[0][0];
+      win.push(k);cnt[k]++;tot++;
+      var bestReal=Math.max(sNp,sZf,sJt);
+      sum+=bestReal;mn=Math.min(mn,bestReal);
+    }
+    var ymax=Math.max(16,Math.ceil(Math.max.apply(null,Ssi)/2)*2);
+    var yt=[];for(var v=0;v<=ymax;v+=4)yt.push(v);
+    var xt=[];for(v=0;v<=st.sep;v+=Math.max(10,Math.round(st.sep/8/10)*10))xt.push(v);
+    var bandH=16;
+    var ax=axes(c,w,h-bandH-8,{xmin:0,xmax:st.sep,ymin:0,ymax:ymax,xticks:xt,yticks:yt,
+      xfmt:function(x){return x+'';},yfmt:function(x){return x+'';},
+      xlabel:'user position (cm)',ylabel:'spectral efficiency (bps/Hz)',l:52,r:16,b:36});
+    curve(c,ax,xs,Ssi,cSi,1.5,[5,4]);
+    curve(c,ax,xs,Snp,cNp,2,[2,3]);
+    curve(c,ax,xs,Szf,cZf,2.3);
+    curve(c,ax,xs,Sjt,cJt,2.3,[9,4]);
+    // region band
+    var by=h-bandH-2;
+    for(i=0;i<win.length;i++){
+      var x0=ax.X(xs[i]), x1=ax.X(xs[Math.min(i+1,win.length-1)]);
+      c.fillStyle=win[i]==='np'?cNp:(win[i]==='zf'?cZf:cJt);
+      c.globalAlpha=.9;
+      c.fillRect(x0,by,Math.max(x1-x0+1,1),bandH);
+    }
+    c.globalAlpha=1;
+    c.font='600 9px "IBM Plex Mono",monospace';c.fillStyle=tok('--ink-3');c.textAlign='left';c.textBaseline='middle';
+    c.fillText('best scheme by position',ax.pad.l,by-8);
+    var pnp=cnt.np/tot*100,pzf=cnt.zf/tot*100,pjt=cnt.jt/tot*100;
+    set('ro_pnp',pnp.toFixed(0)+' %');set('ro_pzf',pzf.toFixed(0)+' %');set('ro_pjt',pjt.toFixed(0)+' %');
+    set('ro_avg',(sum/tot).toFixed(2));set('ro_min',mn.toFixed(2));
+    set('splitTxt','model '+pnp.toFixed(0)+' / '+pzf.toFixed(0)+' / '+pjt.toFixed(0)+'  ·  measured 22 / 46 / 32');
+  }
+  on('s_marg',draw);
+  var sg=document.getElementById('seg_tdma');
+  sg.addEventListener('click',function(e){
+    var b=e.target.closest('button'); if(!b)return;
+    Array.prototype.forEach.call(sg.children,function(x){x.setAttribute('aria-pressed',String(x===b));});
+    tdma=parseInt(b.getAttribute('data-t'),10);draw();
+  });
+  window.__seDraw=draw;
+  reg(draw);
+})();
+
+/* ================= 06 CHAIN DIAGRAM ================= */
+(function(){
+  var cv=document.getElementById('chainC'); if(!cv)return;
+  function draw(){
+    var f=fit(cv),c=f.c,w=f.w,h=f.h;
+    var bg=tok('--surface'),ink=tok('--ink'),ink2=tok('--ink-2'),ink3=tok('--ink-3'),
+        line=tok('--line'),A=tok('--cellA'),B=tok('--cellB'),soft=tok('--line-soft');
+    c.fillStyle=bg;c.fillRect(0,0,w,h);
+    var tx=[['GNU Radio','OFDM + precode'],['USRP-N210','DAC'],['HPA','linear region'],['Bias-tee','+ DC'],['White LED','IM']];
+    var rx=[['PD100A2','+ TIA'],['USRP-N210','ADC'],['GNU Radio','sync · FFT · EQ']];
+    var pad=16, gap=9;
+    var rowY=[h*0.20,h*0.70];
+    function row(items,y,col,startX,availW){
+      var bw=(availW-gap*(items.length-1))/items.length;
+      for(var i=0;i<items.length;i++){
+        var x=startX+i*(bw+gap);
+        c.save();
+        c.strokeStyle=soft;c.fillStyle=tok('--surface-2');c.lineWidth=1;
+        if(c.roundRect){c.beginPath();c.roundRect(x+.5,y-22.5,bw-1,45,3);c.fill();c.stroke();}
+        else{c.fillRect(x,y-22,bw,45);c.strokeRect(x+.5,y-22.5,bw-1,45);}
+        c.restore();
+        c.save();c.textAlign='center';
+        c.fillStyle=ink;c.font='600 11px "Archivo",sans-serif';
+        c.fillText(items[i][0],x+bw/2,y-3);
+        c.fillStyle=ink3;c.font='500 9px "IBM Plex Mono",monospace';
+        c.fillText(items[i][1],x+bw/2,y+12);
+        c.restore();
+        if(i<items.length-1){
+          c.save();c.strokeStyle=col;c.lineWidth=1.6;c.beginPath();
+          c.moveTo(x+bw+1,y);c.lineTo(x+bw+gap-3,y);c.stroke();
+          c.beginPath();c.moveTo(x+bw+gap-3,y);c.lineTo(x+bw+gap-7,y-3);c.lineTo(x+bw+gap-7,y+3);
+          c.closePath();c.fillStyle=col;c.fill();c.restore();
+        }
+      }
+      return {x:startX,w:availW,bw:bw};
+    }
+    var availW=w-pad*2;
+    var r1=row(tx,rowY[0],A,pad,availW);
+    var r2=row(rx,rowY[1],B,pad,availW*0.66);
+    // optical channel arrow from last TX to first RX
+    var sx=pad+availW-r1.bw/2, sy=rowY[0]+23, ex=pad+r2.bw/2, ey=rowY[1]-23;
+    c.save();c.strokeStyle=A;c.lineWidth=1.8;c.setLineDash([5,4]);
+    c.beginPath();c.moveTo(sx,sy);c.bezierCurveTo(sx,sy+34,ex,ey-34,ex,ey);c.stroke();c.restore();
+    c.save();c.fillStyle=A;c.beginPath();c.moveTo(ex,ey);c.lineTo(ex-4,ey-7);c.lineTo(ex+4,ey-7);c.closePath();c.fill();c.restore();
+    c.save();c.textAlign='center';c.fillStyle=ink2;c.font='500 11px "IBM Plex Mono",monospace';
+    c.fillText('line-of-sight optical channel  ·  Lambertian  ·  IM/DD',w*0.52,(rowY[0]+rowY[1])/2+4);
+    c.restore();
+    c.save();c.textAlign='left';c.fillStyle=ink3;c.font='600 9px "IBM Plex Mono",monospace';
+    c.fillText('TRANSMIT',pad,rowY[0]-32);
+    c.fillText('RECEIVE',pad,rowY[1]-32);
+    c.restore();
+  }
+  reg(draw);
+})();
+
+})();
+</script>

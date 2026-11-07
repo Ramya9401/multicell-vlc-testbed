@@ -1,0 +1,8 @@
+# Table I of the paper: measured achievable spectral efficiency across user
+# positions in the two-cell VLC system (2 LEDs, 170 cm apart, 160 cm high).
+# Source: R. Mummadi et al., CSNDSP 2026, doi:10.1109/CSNDSP68462.2026.11654482
+scheme,description,peak_bps_per_hz,avg_bps_per_hz,min_bps_per_hz
+SU-SISO,Single-user single-cell baseline,14.12,8.55,1.31
+SU-MISO,Two cells with joint transmission,14.48,13.86,13.04
+MU-MIMO-NP,Two cells reusing resources with no precoding,12.82,7.85,1.94
+MU-MIMO-ZF,Two cells with zero-forcing precoding,14.08,12.15,8.78

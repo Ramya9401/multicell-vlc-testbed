@@ -1,0 +1,66 @@
+cff-version: 1.2.0
+message: "If you use this software or build on this work, please cite the paper below."
+title: "Multi-cell VLC Testbed"
+abstract: >-
+  Software-defined visible light communication testbed built on GNU Radio and
+  USRP hardware, evaluating zero-forcing precoding and joint transmission for
+  inter-cell interference in a two-cell VLC system with phosphor-converted
+  white LEDs and black-silicon photodetectors.
+type: software
+license: MIT
+repository-code: "https://github.com/REPLACE-ME/multicell-vlc-testbed"
+keywords:
+  - visible light communication
+  - VLC
+  - LiFi
+  - optical wireless
+  - GNU Radio
+  - USRP
+  - software-defined radio
+  - OFDM
+  - MIMO
+  - zero-forcing precoding
+  - joint transmission
+  - coordinated multi-point
+authors:
+  - family-names: Mummadi
+    given-names: Ramya
+    affiliation: "Aalto University, Finland"
+  - family-names: Zhang
+    given-names: Xinyu
+    affiliation: "Aalto University, Finland"
+  - family-names: Dowhuszko
+    given-names: Alexis A.
+    affiliation: "Aalto University, Finland"
+  - family-names: Rallis
+    given-names: Konstantinos G.
+    affiliation: "Aristotle University of Thessaloniki, Greece"
+  - family-names: Wichman
+    given-names: Risto
+    affiliation: "Aalto University, Finland"
+  - family-names: Hämäläinen
+    given-names: Jyri
+    affiliation: "Aalto University, Finland"
+preferred-citation:
+  type: conference-paper
+  title: >-
+    Experimental Evaluation of Multi-User Multi-Point Transmission Schemes in
+    Multi-cell VLC Systems
+  year: 2026
+  doi: "10.1109/CSNDSP68462.2026.11654482"
+  collection-title: >-
+    Proceedings of the 15th International Symposium on Communication Systems,
+    Networks and Digital Signal Processing (CSNDSP)
+  authors:
+    - family-names: Mummadi
+      given-names: Ramya
+    - family-names: Zhang
+      given-names: Xinyu
+    - family-names: Dowhuszko
+      given-names: Alexis A.
+    - family-names: Rallis
+      given-names: Konstantinos G.
+    - family-names: Wichman
+      given-names: Risto
+    - family-names: Hämäläinen
+      given-names: Jyri
